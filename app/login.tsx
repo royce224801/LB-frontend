@@ -25,8 +25,7 @@ export default function LoginScreen() {
     }
 
     try {
-      // Send data to the CORRECT backend path
-      const response = await fetch(`${API_BASE_URL}/api/users/login`, { // <-- THE FIX IS HERE
+      const response = await fetch(`${API_BASE_URL}/api/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,19 +34,32 @@ export default function LoginScreen() {
       });
 
       if (response.ok) {
-        Alert.alert('Success', 'Logged in successfully!');
-        router.replace('/home');
+        // --- KEY CHANGES START HERE ---
+
+        // 1. Get the user data from the backend's response
+        const user = await response.json(); 
+
+        // 2. Show a personalized welcome message
+        Alert.alert('Success', `Welcome back, ${user.name}!`);
+
+        // 3. Navigate to the home screen and pass the user's ID
+        //    This is how other screens will know who is logged in.
+        router.replace(`/home?userId=${user.id}`); 
+        
+        // --- KEY CHANGES END HERE ---
+        
       } else {
         const errorText = await response.text();
         Alert.alert('Login Failed', errorText || 'Invalid credentials.');
       }
     } catch (error) {
       console.error('Login Error:', error);
-      Alert.alert('Network Error', 'Could not connect to the server. Please check your Wi-Fi.');
+      Alert.alert('Network Error', 'Could not connect to the server.');
     }
   };
 
   return (
+    // ... all your JSX UI code remains exactly the same ...
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -75,17 +87,17 @@ export default function LoginScreen() {
 
 // STYLES remain the same
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F2F2F7', },
-  keyboardAvoidingContainer: { flex: 1, },
-  scrollViewContent: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, },
-  header: { alignItems: 'center', marginBottom: 40, },
-  title: { fontSize: 32, fontWeight: '700', color: '#1c1c1e', marginTop: 20, },
-  subtitle: { fontSize: 16, color: '#8e8e93', marginTop: 8, },
-  formContainer: { width: '100%', },
-  input: { backgroundColor: '#FFFFFF', height: 55, borderRadius: 12, marginBottom: 16, paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: '#EFEFEF', },
-  button: { backgroundColor: '#007AFF', paddingVertical: 18, borderRadius: 12, alignItems: 'center', marginTop: 10, },
-  buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold', },
-  linkButton: { marginTop: 24, alignItems: 'center', paddingBottom: 20, },
-  linkText: { color: '#8e8e93', fontSize: 14, },
-  linkTextBold: { color: '#007AFF', fontWeight: 'bold', },
+    container: { flex: 1, backgroundColor: '#F2F2F7', },
+    keyboardAvoidingContainer: { flex: 1, },
+    scrollViewContent: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, },
+    header: { alignItems: 'center', marginBottom: 40, },
+    title: { fontSize: 32, fontWeight: '700', color: '#1c1c1e', marginTop: 20, },
+    subtitle: { fontSize: 16, color: '#8e8e93', marginTop: 8, },
+    formContainer: { width: '100%', },
+    input: { backgroundColor: '#FFFFFF', height: 55, borderRadius: 12, marginBottom: 16, paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: '#EFEFEF', },
+    button: { backgroundColor: '#007AFF', paddingVertical: 18, borderRadius: 12, alignItems: 'center', marginTop: 10, },
+    buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold', },
+    linkButton: { marginTop: 24, alignItems: 'center', paddingBottom: 20, },
+    linkText: { color: '#8e8e93', fontSize: 14, },
+    linkTextBold: { color: '#007AFF', fontWeight: 'bold', },
 });
