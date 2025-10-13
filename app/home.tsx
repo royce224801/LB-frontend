@@ -27,7 +27,7 @@ export default function HomeScreen() {
             })}
           >
             <FontAwesome name="heartbeat" size={40} color="#007bff" />
-            <Text style={styles.menuItemText}>Health Records</Text>
+            <Text style={styles.menuItemText}>Manage Health Records</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/medicine-reminder')}>

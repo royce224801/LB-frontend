@@ -13,10 +13,9 @@ import API_BASE_URL from '../api-config';
 
 export default function HealthRecordsScreen() {
     const router = useRouter();
-    // Get the userId that was passed from the home screen
     const { userId } = useLocalSearchParams();
+    const [recordId, setRecordId] = useState(null);
 
-    // State to hold the form data
     const [bloodGroup, setBloodGroup] = useState('');
     const [allergies, setAllergies] = useState('');
     const [medicalConditions, setMedicalConditions] = useState('');
@@ -27,24 +26,26 @@ export default function HealthRecordsScreen() {
     // --- Fetch existing record when the screen loads ---
     useEffect(() => {
         const fetchRecord = async () => {
-            if (!userId) return; // Don't run if userId is not available yet
+            if (!userId) {
+                Alert.alert('Error', 'User ID is missing.');
+                return;
+            }
             try {
-                // Ask the backend for the record belonging to this user
                 const response = await fetch(`${API_BASE_URL}/api/records/user/${userId}`);
                 if (response.ok) {
                     const data = await response.json();
-                    // Fill the form with the data from the database
+                    setRecordId(data.id);
                     setBloodGroup(data.bloodGroup || '');
                     setAllergies(data.allergies || '');
                     setMedicalConditions(data.medicalConditions || '');
                     setHeight(data.height?.toString() || '');
                     setWeight(data.weight?.toString() || '');
                 } else {
-                    // It's okay if no record is found, it just means the user is new
-                    console.log('No existing health record found for this user.');
+                    console.log('No existing health record found for this user, will create a new one.');
                 }
             } catch (error) {
                 console.error('Failed to fetch health record:', error);
+                Alert.alert('Network Error', 'Could not connect to the server.');
             }
         };
 
@@ -58,20 +59,14 @@ export default function HealthRecordsScreen() {
             const bmiValue = weightInKg / (heightInMeters * heightInMeters);
             setBmi(bmiValue.toFixed(2));
         } else {
-            setBmi(null); // Clear BMI if input is invalid
+            setBmi(null);
         }
     };
     
-    // Recalculate BMI whenever height or weight changes
     useEffect(calculateBmi, [height, weight]);
 
-    // --- handleSaveRecord now sends data to the backend ---
     const handleSaveRecord = async () => {
-        // ADDED ROBUST VALIDATION: Ensures userId is a valid number before proceeding
-        const id = Array.isArray(userId) ? userId[0] : userId; // Handle array case
-        const parsedId = parseInt(id, 10);
-
-        if (!id || isNaN(parsedId)) {
+        if (!userId || isNaN(Number(userId))) {
             Alert.alert('Error', 'User ID is invalid. Please log in again.');
             return;
         }
@@ -80,14 +75,18 @@ export default function HealthRecordsScreen() {
             Alert.alert('Validation Error', 'Please fill in at least blood group, height, and weight.');
             return;
         }
+        
+        const method = recordId ? 'PUT' : 'POST';
+        // The URL is changed here to include the userId in the path
+        const url = `${API_BASE_URL}/api/records/save/${userId}`;
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/records/save`, {
-                method: 'POST',
+            const response = await fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    // The change is here: userId is now nested inside a 'user' object
-                    user: { id: parsedId }, 
+                    id: recordId,
+                    user: { id: userId }, 
                     bloodGroup,
                     allergies,
                     medicalConditions,
@@ -98,7 +97,7 @@ export default function HealthRecordsScreen() {
 
             if (response.ok) {
                 Alert.alert('Success', 'Health record saved successfully!', [
-                    { text: 'OK', onPress: () => router.back() } // Go back after saving
+                    { text: 'OK', onPress: () => router.back() }
                 ]);
             } else {
                 const errorText = await response.text();
@@ -117,7 +116,7 @@ export default function HealthRecordsScreen() {
                 style={{ flex: 1 }}
             >
                 <ScrollView contentContainerStyle={styles.scrollViewContent}>
-                    <Text style={styles.title}>Your Health Record</Text>
+                    <Text style={styles.title}>{recordId ? 'Edit Health Record' : 'Your Health Record'}</Text>
                     
                     <Text style={styles.label}>Blood Group</Text>
                     <TextInput style={styles.input} placeholder="e.g., O+" value={bloodGroup} onChangeText={setBloodGroup} />
@@ -137,7 +136,7 @@ export default function HealthRecordsScreen() {
                     {bmi && <Text style={styles.bmiResult}>Calculated BMI: {bmi}</Text>}
 
                     <TouchableOpacity style={styles.saveButton} onPress={handleSaveRecord}>
-                        <Text style={styles.saveButtonText}>Save Record</Text>
+                        <Text style={styles.saveButtonText}>{recordId ? 'Update Record' : 'Save Record'}</Text>
                     </TouchableOpacity>
                 </ScrollView>
             </KeyboardAvoidingView>
