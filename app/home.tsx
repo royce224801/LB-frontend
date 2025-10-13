@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -18,24 +18,26 @@ export default function HomeScreen() {
           <Text style={styles.subtitle}>Current User ID: {userId}</Text>
         </View>
 
-        <View style={styles.gridContainer}>
-          {/* --- THIS IS THE MODIFIED LINE --- */}
+        <View style={styles.menuContainer}>
           <TouchableOpacity 
-            style={styles.card} 
-            onPress={() => router.push(`/health-records?userId=${userId}`)}
+            style={styles.menuItem} 
+            onPress={() => router.push({
+              pathname: "/health-records",
+              params: { userId: Number(userId) }
+            })}
           >
-            <FontAwesome name="heartbeat" size={32} color="#007bff" />
-            <Text style={styles.cardText}>Health Records</Text>
+            <FontAwesome name="heartbeat" size={40} color="#007bff" />
+            <Text style={styles.menuItemText}>Health Records</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.card} onPress={() => router.push('/medicine-reminder')}>
-            <MaterialCommunityIcons name="pill" size={32} color="#28a745" />
-            <Text style={styles.cardText}>Medicine Reminders</Text>
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/medicine-reminder')}>
+            <MaterialCommunityIcons name="pill" size={40} color="#28a745" />
+            <Text style={styles.menuItemText}>Medicine Reminders</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.card} onPress={() => router.push('/doctor-consultation')}>
-            <FontAwesome name="user-md" size={32} color="#dc3545" />
-            <Text style={styles.cardText}>Book Appointment</Text>
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/doctor-consultation')}>
+            <FontAwesome name="user-md" size={40} color="#dc3545" />
+            <Text style={styles.menuItemText}>Book Appointment</Text>
           </TouchableOpacity>
         </View>
 
@@ -65,36 +67,34 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
+    color: '#333',
   },
   subtitle: {
     fontSize: 18,
     color: '#666',
     marginTop: 4,
   },
-  gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+  menuContainer: {
+    paddingTop: 50,
+    gap: 15,
   },
-  card: {
+  menuItem: {
     backgroundColor: '#ffffff',
-    width: '48%',
-    padding: 20,
-    borderRadius: 12,
+    padding: 25,
+    borderRadius: 15,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 15,
+    flexDirection: 'row',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 6,
+    elevation: 5,
   },
-  cardText: {
-    marginTop: 10,
-    fontSize: 16,
+  menuItemText: {
+    marginLeft: 20,
+    fontSize: 18,
     fontWeight: '600',
-    textAlign: 'center',
+    color: '#333',
   },
   logoutButton: {
     backgroundColor: '#ff3b30',

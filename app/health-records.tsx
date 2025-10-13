@@ -30,7 +30,6 @@ export default function HealthRecordsScreen() {
             if (!userId) return; // Don't run if userId is not available yet
             try {
                 // Ask the backend for the record belonging to this user
-                // The URL is changed to match the backend's /user/{userId} endpoint
                 const response = await fetch(`${API_BASE_URL}/api/records/user/${userId}`);
                 if (response.ok) {
                     const data = await response.json();
@@ -68,18 +67,27 @@ export default function HealthRecordsScreen() {
 
     // --- handleSaveRecord now sends data to the backend ---
     const handleSaveRecord = async () => {
+        // ADDED ROBUST VALIDATION: Ensures userId is a valid number before proceeding
+        const id = Array.isArray(userId) ? userId[0] : userId; // Handle array case
+        const parsedId = parseInt(id, 10);
+
+        if (!id || isNaN(parsedId)) {
+            Alert.alert('Error', 'User ID is invalid. Please log in again.');
+            return;
+        }
+
         if (!bloodGroup || !height || !weight) {
             Alert.alert('Validation Error', 'Please fill in at least blood group, height, and weight.');
             return;
         }
 
         try {
-            // The URL is changed to match the backend's /save endpoint
             const response = await fetch(`${API_BASE_URL}/api/records/save`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    userId, // Tell the backend which user this record belongs to
+                    // The change is here: userId is now nested inside a 'user' object
+                    user: { id: parsedId }, 
                     bloodGroup,
                     allergies,
                     medicalConditions,
