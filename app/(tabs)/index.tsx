@@ -11,7 +11,7 @@ import {
   TextInput, TouchableOpacity,
   View
 } from 'react-native';
-import API_BASE_URL from '../../api-config'; 
+import API_BASE_URL from '../../api-config';
 
 export default function RegistrationScreen() {
   const [name, setName] = useState('');

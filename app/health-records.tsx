@@ -1,9 +1,14 @@
-import { useState, useEffect } from 'react';
-import { 
-    StyleSheet, Text, View, TextInput, TouchableOpacity, 
-    SafeAreaView, Alert, ScrollView, Platform, KeyboardAvoidingView 
-} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import {
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet, Text,
+    TextInput, TouchableOpacity
+} from 'react-native';
 import API_BASE_URL from '../api-config';
 
 export default function HealthRecordsScreen() {
@@ -14,18 +19,19 @@ export default function HealthRecordsScreen() {
     // State to hold the form data
     const [bloodGroup, setBloodGroup] = useState('');
     const [allergies, setAllergies] = useState('');
-    const [medicalConditions, setMedicalConditions] = useState(''); // Renamed for clarity
+    const [medicalConditions, setMedicalConditions] = useState('');
     const [height, setHeight] = useState('');
     const [weight, setWeight] = useState('');
     const [bmi, setBmi] = useState<string | null>(null);
 
-    // --- NEW: Fetch existing record when the screen loads ---
+    // --- Fetch existing record when the screen loads ---
     useEffect(() => {
         const fetchRecord = async () => {
             if (!userId) return; // Don't run if userId is not available yet
             try {
                 // Ask the backend for the record belonging to this user
-                const response = await fetch(`${API_BASE_URL}/api/records/${userId}`);
+                // The URL is changed to match the backend's /user/{userId} endpoint
+                const response = await fetch(`${API_BASE_URL}/api/records/user/${userId}`);
                 if (response.ok) {
                     const data = await response.json();
                     // Fill the form with the data from the database
@@ -44,7 +50,7 @@ export default function HealthRecordsScreen() {
         };
 
         fetchRecord();
-    }, [userId]); // This hook runs once when the screen loads with a valid userId
+    }, [userId]);
 
     const calculateBmi = () => {
         const heightInMeters = parseFloat(height) / 100;
@@ -60,7 +66,7 @@ export default function HealthRecordsScreen() {
     // Recalculate BMI whenever height or weight changes
     useEffect(calculateBmi, [height, weight]);
 
-    // --- NEW: handleSaveRecord now sends data to the backend ---
+    // --- handleSaveRecord now sends data to the backend ---
     const handleSaveRecord = async () => {
         if (!bloodGroup || !height || !weight) {
             Alert.alert('Validation Error', 'Please fill in at least blood group, height, and weight.');
@@ -68,7 +74,8 @@ export default function HealthRecordsScreen() {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/records`, {
+            // The URL is changed to match the backend's /save endpoint
+            const response = await fetch(`${API_BASE_URL}/api/records/save`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
