@@ -77,8 +77,10 @@ export default function HealthRecordsScreen() {
         }
         
         const method = recordId ? 'PUT' : 'POST';
-        // The URL is changed here to include the userId in the path
-        const url = `${API_BASE_URL}/api/records/save/${userId}`;
+        // CORRECTED: Use a different URL for PUT requests
+        const url = recordId 
+            ? `${API_BASE_URL}/api/records/user/${userId}` 
+            : `${API_BASE_URL}/api/records/save/${userId}`;
 
         try {
             const response = await fetch(url, {

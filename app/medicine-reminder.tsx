@@ -1,5 +1,6 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { FontAwesome } from '@expo/vector-icons';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -15,8 +16,8 @@ import API_BASE_URL from '../api-config';
 type Reminder = {
   id: number;
   medicineName: string;
-  reminderTime: string; // The time the reminder should fire
-  dosage: string; // e.g., "1 tablet", "5 ml"
+  reminderTime: string;
+  dosage: string;
   isActive: boolean;
 };
 
@@ -25,8 +26,7 @@ export default function MedicineReminderScreen() {
   const { userId } = useLocalSearchParams();
   const [reminders, setReminders] = useState<Reminder[]>([]);
 
-  // Function to fetch reminders from the backend
-  const fetchReminders = async () => {
+  const fetchReminders = useCallback(async () => {
     if (!userId) {
       Alert.alert('Error', 'User ID is missing. Please log in again.');
       return;
@@ -46,21 +46,20 @@ export default function MedicineReminderScreen() {
       console.error('Failed to fetch reminders:', error);
       Alert.alert('Network Error', 'Could not connect to the server.');
     }
-  };
-
-  // Fetch reminders on screen load and when userId changes
-  useEffect(() => {
-    fetchReminders();
   }, [userId]);
 
-  // Function to toggle reminder status
+  useFocusEffect(
+    useCallback(() => {
+      fetchReminders();
+    }, [fetchReminders])
+  );
+
   const toggleReminderStatus = async (id: number, isActive: boolean) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/reminders/toggle/${id}?active=${!isActive}`, {
         method: 'PUT',
       });
       if (response.ok) {
-        // Optimistically update the UI
         setReminders(currentReminders =>
           currentReminders.map(r => (r.id === id ? { ...r, isActive: !r.isActive } : r))
         );
@@ -71,6 +70,39 @@ export default function MedicineReminderScreen() {
       console.error('Failed to toggle reminder status:', error);
       Alert.alert('Network Error', 'Could not connect to the server.');
     }
+  };
+
+  const deleteReminder = async (id: number) => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this reminder?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: async () => {
+            try {
+              const response = await fetch(`${API_BASE_URL}/api/reminders/${id}`, {
+                method: 'DELETE',
+              });
+              if (response.ok) {
+                setReminders(currentReminders => currentReminders.filter(r => r.id !== id));
+              } else {
+                Alert.alert('Error', 'Failed to delete reminder.');
+              }
+            } catch (error) {
+              console.error('Failed to delete reminder:', error);
+              Alert.alert('Network Error', 'Could not connect to the server.');
+            }
+          },
+          style: "destructive",
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   const renderReminder = ({ item }: { item: Reminder }) => (
@@ -85,6 +117,9 @@ export default function MedicineReminderScreen() {
         onValueChange={() => toggleReminderStatus(item.id, item.isActive)}
         value={item.isActive}
       />
+      <TouchableOpacity onPress={() => deleteReminder(item.id)} style={styles.deleteButton}>
+        <FontAwesome name="trash-o" size={24} color="#ff3b30" />
+      </TouchableOpacity>
     </View>
   );
 
@@ -168,5 +203,8 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  deleteButton: {
+    marginLeft: 15,
   },
 });
