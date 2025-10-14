@@ -19,8 +19,8 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.menuContainer}>
-          <TouchableOpacity 
-            style={styles.menuItem} 
+          <TouchableOpacity
+            style={styles.menuItem}
             onPress={() => router.push({
               pathname: "/health-records",
               params: { userId: Number(userId) }
@@ -30,8 +30,8 @@ export default function HomeScreen() {
             <Text style={styles.menuItemText}>Manage Health Records</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.menuItem} 
+          <TouchableOpacity
+            style={styles.menuItem}
             onPress={() => router.push({
               pathname: "/medicine-reminder",
               params: { userId: Number(userId) }
@@ -41,9 +41,27 @@ export default function HomeScreen() {
             <Text style={styles.menuItemText}>Medicine Reminders</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/doctor-consultation')}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => router.push({
+              pathname: "/doctor-consultation",
+              params: { userId: Number(userId) }
+            })}
+          >
             <FontAwesome name="user-md" size={40} color="#dc3545" />
-            <Text style={styles.menuItemText}>Book Appointment</Text>
+            <Text style={styles.menuItemText}>Book an Appointment</Text>
+          </TouchableOpacity>
+            
+          {/* NEW BUTTON FOR VIEWING APPOINTMENTS */}
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => router.push({
+              pathname: "/view-appointments",
+              params: { userId: Number(userId) }
+            })}
+          >
+            <FontAwesome name="list-alt" size={40} color="#007bff" />
+            <Text style={styles.menuItemText}>View Appointments</Text>
           </TouchableOpacity>
         </View>
 

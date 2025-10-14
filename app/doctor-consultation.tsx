@@ -1,18 +1,16 @@
 import { FontAwesome } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-// ## 1. UPDATE THE DATA STRUCTURE ##
 type Doctor = {
   id: string;
   name: string;
   specialty: string;
   available: boolean;
-  availabilityTime?: string; // Add optional property for available times
-  nextAvailable?: string;    // Add optional property for next availability
+  availabilityTime?: string;
+  nextAvailable?: string;
 };
 
-// ## 2. UPDATE THE MOCK DATA ##
 const mockDoctors: Doctor[] = [
   { id: '1', name: 'Dr. Emily Carter', specialty: 'General Physician', available: true, availabilityTime: '10:00 AM - 1:00 PM' },
   { id: '2', name: 'Dr. Ben Adams', specialty: 'Cardiologist', available: false, nextAvailable: 'Available Tomorrow' },
@@ -22,16 +20,14 @@ const mockDoctors: Doctor[] = [
 
 export default function DoctorConsultationScreen() {
   const router = useRouter();
+  const { userId } = useLocalSearchParams();
 
-  // ## 3. UPDATE THE UI COMPONENT ##
   const renderDoctor = ({ item }: { item: Doctor }) => (
     <View style={styles.doctorCard}>
       <FontAwesome name="user-md" size={40} color="#007AFF" style={styles.doctorIcon} />
       <View style={styles.doctorInfo}>
         <Text style={styles.doctorName}>{item.name}</Text>
         <Text style={styles.doctorSpecialty}>{item.specialty}</Text>
-        
-        {/* Conditionally render the availability text based on status */}
         {item.available ? (
           <Text style={styles.availableText}>{item.availabilityTime}</Text>
         ) : (
@@ -41,7 +37,10 @@ export default function DoctorConsultationScreen() {
       <TouchableOpacity
         style={[styles.bookButton, !item.available && styles.disabledButton]}
         disabled={!item.available}
-        onPress={() => alert(`Booking appointment with ${item.name}...`)}
+        onPress={() => router.push({
+          pathname: '/book-appointment',
+          params: { userId: Number(userId), doctorName: item.name, specialty: item.specialty },
+        })}
       >
         <Text style={styles.bookButtonText}>{item.available ? 'Book' : 'Unavailable'}</Text>
       </TouchableOpacity>
@@ -63,7 +62,6 @@ export default function DoctorConsultationScreen() {
   );
 }
 
-// ## 4. UPDATE THE STYLES ##
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -106,16 +104,15 @@ const styles = StyleSheet.create({
     color: '#8e8e93',
     marginTop: 2,
   },
-  // New styles for the availability text
   availableText: {
     fontSize: 14,
-    color: '#34C759', // Green for available
+    color: '#34C759',
     fontWeight: '500',
     marginTop: 4,
   },
   unavailableText: {
     fontSize: 14,
-    color: '#FF9500', // Orange for unavailable
+    color: '#FF9500',
     fontWeight: '500',
     marginTop: 4,
   },
