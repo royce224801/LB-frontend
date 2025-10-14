@@ -30,7 +30,13 @@ export default function HomeScreen() {
             <Text style={styles.menuItemText}>Manage Health Records</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/medicine-reminder')}>
+          <TouchableOpacity 
+            style={styles.menuItem} 
+            onPress={() => router.push({
+              pathname: "/medicine-reminder",
+              params: { userId: Number(userId) }
+            })}
+          >
             <MaterialCommunityIcons name="pill" size={40} color="#28a745" />
             <Text style={styles.menuItemText}>Medicine Reminders</Text>
           </TouchableOpacity>

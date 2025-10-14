@@ -1,45 +1,88 @@
-import { useRouter } from 'expo-router'; // <-- IMPORT THE ROUTER
-import { useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 import {
-    FlatList,
-    SafeAreaView,
-    StyleSheet,
-    Switch,
-    Text,
-    TouchableOpacity,
-    View
+  Alert,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import API_BASE_URL from '../api-config';
 
 type Reminder = {
-  id: string; name: string; time: string; dosage: string; isActive: boolean;
+  id: number;
+  medicineName: string;
+  reminderTime: string; // The time the reminder should fire
+  dosage: string; // e.g., "1 tablet", "5 ml"
+  isActive: boolean;
 };
 
-const initialReminders: Reminder[] = [
-  { id: '1', name: 'Metformin', time: '8:00 AM', dosage: '1 tablet', isActive: true },
-  { id: '2', name: 'Aspirin', time: '12:00 PM', dosage: '1 tablet', isActive: true },
-  { id: '3', name: 'Atorvastatin', time: '9:00 PM', dosage: '2 tablets', isActive: false },
-];
-
 export default function MedicineReminderScreen() {
-  const router = useRouter(); // <-- GET THE ROUTER INSTANCE
-  const [reminders, setReminders] = useState(initialReminders);
+  const router = useRouter();
+  const { userId } = useLocalSearchParams();
+  const [reminders, setReminders] = useState<Reminder[]>([]);
 
-  const toggleReminderStatus = (id: string) => {
-    setReminders(currentReminders =>
-      currentReminders.map(r => r.id === id ? { ...r, isActive: !r.isActive } : r)
-    );
+  // Function to fetch reminders from the backend
+  const fetchReminders = async () => {
+    if (!userId) {
+      Alert.alert('Error', 'User ID is missing. Please log in again.');
+      return;
+    }
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/reminders/user/${userId}`);
+      if (response.ok) {
+        const data: Reminder[] = await response.json();
+        setReminders(data);
+      } else if (response.status === 404) {
+        console.log('No reminders found for this user.');
+        setReminders([]);
+      } else {
+        Alert.alert('Error', 'Failed to fetch reminders.');
+      }
+    } catch (error) {
+      console.error('Failed to fetch reminders:', error);
+      Alert.alert('Network Error', 'Could not connect to the server.');
+    }
+  };
+
+  // Fetch reminders on screen load and when userId changes
+  useEffect(() => {
+    fetchReminders();
+  }, [userId]);
+
+  // Function to toggle reminder status
+  const toggleReminderStatus = async (id: number, isActive: boolean) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/reminders/toggle/${id}?active=${!isActive}`, {
+        method: 'PUT',
+      });
+      if (response.ok) {
+        // Optimistically update the UI
+        setReminders(currentReminders =>
+          currentReminders.map(r => (r.id === id ? { ...r, isActive: !r.isActive } : r))
+        );
+      } else {
+        Alert.alert('Error', 'Failed to update reminder status.');
+      }
+    } catch (error) {
+      console.error('Failed to toggle reminder status:', error);
+      Alert.alert('Network Error', 'Could not connect to the server.');
+    }
   };
 
   const renderReminder = ({ item }: { item: Reminder }) => (
     <View style={[styles.reminderItem, !item.isActive && styles.inactiveReminderItem]}>
       <View style={styles.reminderInfo}>
-        <Text style={styles.reminderName}>{item.name}</Text>
-        <Text style={styles.reminderDetails}>Dosage: {item.dosage} at {item.time}</Text>
+        <Text style={styles.reminderName}>{item.medicineName}</Text>
+        <Text style={styles.reminderDetails}>Dosage: {item.dosage} at {item.reminderTime}</Text>
       </View>
       <Switch
         trackColor={{ false: '#dcdcdc', true: '#a0c8ff' }}
         thumbColor={item.isActive ? '#007AFF' : '#f4f3f4'}
-        onValueChange={() => toggleReminderStatus(item.id)}
+        onValueChange={() => toggleReminderStatus(item.id, item.isActive)}
         value={item.isActive}
       />
     </View>
@@ -54,13 +97,18 @@ export default function MedicineReminderScreen() {
       <FlatList
         data={reminders}
         renderItem={renderReminder}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id.toString()}
         style={styles.list}
       />
 
-      {/* THIS BUTTON NOW NAVIGATES TO THE NEW SCREEN */}
-      <TouchableOpacity style={styles.addButton} onPress={() => router.push('/add-reminder')}>
-          <Text style={styles.addButtonText}>Add New Reminder</Text>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => router.push({
+          pathname: '/add-reminder',
+          params: { userId: Number(userId) }
+        })}
+      >
+        <Text style={styles.addButtonText}>Add New Reminder</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -72,8 +120,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2F2F7',
   },
   header: {
-      padding: 20,
-      alignItems: 'center'
+    padding: 20,
+    alignItems: 'center',
   },
   title: {
     fontSize: 28,
@@ -110,15 +158,15 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   addButton: {
-      backgroundColor: '#007AFF',
-      margin: 20,
-      padding: 18,
-      borderRadius: 12,
-      alignItems: 'center'
+    backgroundColor: '#007AFF',
+    margin: 20,
+    padding: 18,
+    borderRadius: 12,
+    alignItems: 'center',
   },
   addButtonText: {
-      color: '#FFFFFF',
-      fontSize: 16,
-      fontWeight: 'bold'
-  }
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });

@@ -1,43 +1,66 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet, Text,
-    TextInput, TouchableOpacity,
-    View
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import API_BASE_URL from '../api-config';
 
 export default function AddReminderScreen() {
   const router = useRouter();
+  const { userId } = useLocalSearchParams();
   const [medicineName, setMedicineName] = useState('');
   const [dosage, setDosage] = useState('');
   const [time, setTime] = useState('');
 
-  const handleSaveReminder = () => {
+  const handleSaveReminder = async () => {
+    if (!userId || isNaN(Number(userId))) {
+      Alert.alert('Error', 'User ID is invalid. Please log in again.');
+      return;
+    }
     if (!medicineName || !dosage || !time) {
       Alert.alert('Error', 'Please fill in all fields.');
       return;
     }
 
-    const reminderDetails = `Medicine: ${medicineName}\nDosage: ${dosage}\nTime: ${time}`;
-    
-    // In a real app, you'd save this to state or a database.
-    // For now, we'll just show an alert and go back.
-    Alert.alert('Reminder Saved (Mock)', reminderDetails, [
-      { text: 'OK', onPress: () => router.back() } // Go back to the reminder list
-    ]);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/reminders/save`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user: { id: userId },
+          medicineName,
+          dosage,
+          reminderTime: time, // Send the time as a string for now
+          isActive: true,
+        }),
+      });
+
+      if (response.ok) {
+        Alert.alert('Success', 'Reminder saved successfully!', [
+          { text: 'OK', onPress: () => router.back() },
+        ]);
+      } else {
+        const errorText = await response.text();
+        Alert.alert('Save Failed', errorText || 'An error occurred on the server.');
+      }
+    } catch (error) {
+      console.error('Save Reminder Error:', error);
+      Alert.alert('Network Error', 'Could not connect to the server.');
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardAvoidingContainer}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardAvoidingContainer}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text style={styles.title}>Add New Reminder</Text>
 
@@ -73,7 +96,6 @@ export default function AddReminderScreen() {
   );
 }
 
-// Using the same modern styles as our other forms
 const styles = StyleSheet.create({
   container: {
     flex: 1,
