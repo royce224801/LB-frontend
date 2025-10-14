@@ -112,13 +112,13 @@ export default function MedicineReminderScreen() {
         <Text style={styles.reminderDetails}>Dosage: {item.dosage} at {item.reminderTime}</Text>
       </View>
       <Switch
-        trackColor={{ false: '#dcdcdc', true: '#a0c8ff' }}
-        thumbColor={item.isActive ? '#007AFF' : '#f4f3f4'}
+        trackColor={{ false: '#4D4D4D', true: '#578FFF' }}
+        thumbColor={item.isActive ? '#E0E0E0' : '#B0B0B0'}
         onValueChange={() => toggleReminderStatus(item.id, item.isActive)}
         value={item.isActive}
       />
       <TouchableOpacity onPress={() => deleteReminder(item.id)} style={styles.deleteButton}>
-        <FontAwesome name="trash-o" size={24} color="#ff3b30" />
+        <FontAwesome name="trash-o" size={24} color="#FF4D4D" />
       </TouchableOpacity>
     </View>
   );
@@ -152,7 +152,7 @@ export default function MedicineReminderScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     padding: 20,
@@ -162,23 +162,28 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#1c1c1e',
+    color: '#E0E0E0',
   },
   list: {
     paddingHorizontal: 20,
   },
   reminderItem: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#2C2C2C',
     padding: 20,
-    borderRadius: 12,
+    borderRadius: 15,
     marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
   },
   inactiveReminderItem: {
-    backgroundColor: '#FFFFFF',
-    opacity: 0.5,
+    backgroundColor: '#3A3A3A',
+    opacity: 0.6,
   },
   reminderInfo: {
     flex: 1,
@@ -186,14 +191,15 @@ const styles = StyleSheet.create({
   reminderName: {
     fontSize: 18,
     fontWeight: '600',
+    color: '#E0E0E0',
   },
   reminderDetails: {
     fontSize: 14,
-    color: '#8e8e93',
+    color: '#B0B0B0',
     marginTop: 4,
   },
   addButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#578FFF',
     margin: 20,
     padding: 18,
     borderRadius: 12,

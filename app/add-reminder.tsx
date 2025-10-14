@@ -91,19 +91,19 @@ export default function AddReminderScreen() {
             <TextInput
               style={styles.input}
               placeholder="Medicine Name (e.g., Paracetamol)"
-              placeholderTextColor="#999"
+              placeholderTextColor="#B0B0B0"
               value={medicineName}
               onChangeText={setMedicineName}
             />
             <TextInput
               style={styles.input}
               placeholder="Dosage (e.g., 1 tablet)"
-              placeholderTextColor="#999"
+              placeholderTextColor="#B0B0B0"
               value={dosage}
               onChangeText={setDosage}
             />
             <TouchableOpacity style={styles.input} onPress={() => setShowPicker(true)}>
-              <Text style={{ color: '#000', fontSize: 16 }}>
+              <Text style={{ color: '#E0E0E0', fontSize: 16 }}>
                 {reminderTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}
               </Text>
             </TouchableOpacity>
@@ -132,7 +132,7 @@ export default function AddReminderScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#efececc9',
+    backgroundColor: '#1A1A1A',
   },
   keyboardAvoidingContainer: {
     flex: 1,
@@ -147,24 +147,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 30,
-    color: '#1c1c1e',
+    color: '#E0E0E0',
   },
   formContainer: {
     width: '100%',
   },
   input: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#2C2C2C',
     height: 55,
     borderRadius: 12,
     marginBottom: 16,
     paddingHorizontal: 16,
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#d8d2ccff',
+    borderColor: '#444',
     justifyContent: 'center',
+    color: '#E0E0E0',
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#578FFF',
     paddingVertical: 18,
     borderRadius: 12,
     alignItems: 'center',

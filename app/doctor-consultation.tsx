@@ -24,7 +24,7 @@ export default function DoctorConsultationScreen() {
 
   const renderDoctor = ({ item }: { item: Doctor }) => (
     <View style={styles.doctorCard}>
-      <FontAwesome name="user-md" size={40} color="#007AFF" style={styles.doctorIcon} />
+      <FontAwesome name="user-md" size={40} color="#578FFF" style={styles.doctorIcon} />
       <View style={styles.doctorInfo}>
         <Text style={styles.doctorName}>{item.name}</Text>
         <Text style={styles.doctorSpecialty}>{item.specialty}</Text>
@@ -65,7 +65,7 @@ export default function DoctorConsultationScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: '#1A1A1A', // Dark theme background
   },
   header: {
       padding: 20,
@@ -75,18 +75,23 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#1c1c1e',
+    color: '#E0E0E0', // Light gray for title
   },
   listContainer: {
     paddingHorizontal: 20,
   },
   doctorCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#2C2C2C', // Dark gray card background
     padding: 20,
-    borderRadius: 12,
+    borderRadius: 15,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
   },
   doctorIcon: {
     marginRight: 15,
@@ -97,36 +102,36 @@ const styles = StyleSheet.create({
   doctorName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1c1c1e',
+    color: '#E0E0E0', // Light gray for name
   },
   doctorSpecialty: {
     fontSize: 14,
-    color: '#8e8e93',
+    color: '#B0B0B0', // Neutral gray for specialty
     marginTop: 2,
   },
   availableText: {
     fontSize: 14,
-    color: '#34C759',
+    color: '#34C759', // Green for available
     fontWeight: '500',
     marginTop: 4,
   },
   unavailableText: {
     fontSize: 14,
-    color: '#FF9500',
+    color: '#FF4D4D', // Red for unavailable
     fontWeight: '500',
     marginTop: 4,
   },
   bookButton: {
-    backgroundColor: '#34C759',
+    backgroundColor: '#578FFF', // Primary blue button
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 8,
+    borderRadius: 10,
   },
   disabledButton: {
-    backgroundColor: '#ced4da',
+    backgroundColor: '#4D4D4D', // Dark gray for disabled button
   },
   bookButtonText: {
-    color: '#ffffff',
+    color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 14,
   },

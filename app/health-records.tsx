@@ -1,6 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
+    ActivityIndicator,
     Alert,
     KeyboardAvoidingView,
     Platform,
@@ -22,6 +23,7 @@ export default function HealthRecordsScreen() {
     const [height, setHeight] = useState('');
     const [weight, setWeight] = useState('');
     const [bmi, setBmi] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
 
     // --- Fetch existing record when the screen loads ---
     useEffect(() => {
@@ -46,6 +48,8 @@ export default function HealthRecordsScreen() {
             } catch (error) {
                 console.error('Failed to fetch health record:', error);
                 Alert.alert('Network Error', 'Could not connect to the server.');
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -77,7 +81,6 @@ export default function HealthRecordsScreen() {
         }
         
         const method = recordId ? 'PUT' : 'POST';
-        // CORRECTED: Use a different URL for PUT requests
         const url = recordId 
             ? `${API_BASE_URL}/api/records/user/${userId}` 
             : `${API_BASE_URL}/api/records/save/${userId}`;
@@ -110,6 +113,14 @@ export default function HealthRecordsScreen() {
             Alert.alert('Network Error', 'Could not connect to the server.');
         }
     };
+    
+    if (loading) {
+        return (
+            <SafeAreaView style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#578FFF" />
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -121,19 +132,51 @@ export default function HealthRecordsScreen() {
                     <Text style={styles.title}>{recordId ? 'Edit Health Record' : 'Your Health Record'}</Text>
                     
                     <Text style={styles.label}>Blood Group</Text>
-                    <TextInput style={styles.input} placeholder="e.g., O+" value={bloodGroup} onChangeText={setBloodGroup} />
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder="e.g., O+" 
+                        placeholderTextColor="#B0B0B0"
+                        value={bloodGroup} 
+                        onChangeText={setBloodGroup} 
+                    />
 
                     <Text style={styles.label}>Known Allergies</Text>
-                    <TextInput style={styles.input} placeholder="e.g., Peanuts, Penicillin" value={allergies} onChangeText={setAllergies} />
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder="e.g., Peanuts, Penicillin" 
+                        placeholderTextColor="#B0B0B0"
+                        value={allergies} 
+                        onChangeText={setAllergies} 
+                    />
 
                     <Text style={styles.label}>Chronic Medical Conditions</Text>
-                    <TextInput style={styles.input} placeholder="e.g., Diabetes, Asthma" value={medicalConditions} onChangeText={setMedicalConditions} />
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder="e.g., Diabetes, Asthma" 
+                        placeholderTextColor="#B0B0B0"
+                        value={medicalConditions} 
+                        onChangeText={setMedicalConditions} 
+                    />
 
                     <Text style={styles.label}>Height (cm)</Text>
-                    <TextInput style={styles.input} placeholder="Your height in centimeters" value={height} onChangeText={setHeight} keyboardType="numeric" />
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder="Your height in centimeters" 
+                        placeholderTextColor="#B0B0B0"
+                        value={height} 
+                        onChangeText={setHeight} 
+                        keyboardType="numeric" 
+                    />
 
                     <Text style={styles.label}>Weight (kg)</Text>
-                    <TextInput style={styles.input} placeholder="Your weight in kilograms" value={weight} onChangeText={setWeight} keyboardType="numeric" />
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder="Your weight in kilograms" 
+                        placeholderTextColor="#B0B0B0"
+                        value={weight} 
+                        onChangeText={setWeight} 
+                        keyboardType="numeric" 
+                    />
 
                     {bmi && <Text style={styles.bmiResult}>Calculated BMI: {bmi}</Text>}
 
@@ -147,12 +190,23 @@ export default function HealthRecordsScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#F2F2F7', },
-    scrollViewContent: { flexGrow: 1, padding: 24, },
-    title: { fontSize: 28, fontWeight: 'bold', textAlign: 'center', marginBottom: 24, color: '#1c1c1e', },
-    label: { fontSize: 16, fontWeight: '600', color: '#333', marginBottom: 8, },
-    input: { backgroundColor: '#FFFFFF', height: 55, borderRadius: 12, marginBottom: 16, paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: '#EFEFEF', },
-    bmiResult: { marginTop: -5, marginBottom: 20, fontSize: 16, fontWeight: '600', textAlign: 'center', color: '#007AFF', },
-    saveButton: { backgroundColor: '#34C759', paddingVertical: 18, borderRadius: 12, alignItems: 'center', marginTop: 10, },
+    container: { flex: 1, backgroundColor: '#1A1A1A', },
+    loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    scrollViewContent: { flexGrow: 1, padding: 24, justifyContent: 'center' },
+    title: { fontSize: 28, fontWeight: 'bold', textAlign: 'center', marginBottom: 24, color: '#E0E0E0', },
+    label: { fontSize: 16, fontWeight: '600', color: '#E0E0E0', marginBottom: 8, },
+    input: { 
+        backgroundColor: '#2C2C2C', 
+        height: 55, 
+        borderRadius: 12, 
+        marginBottom: 16, 
+        paddingHorizontal: 16, 
+        fontSize: 16, 
+        borderWidth: 1, 
+        borderColor: '#444', 
+        color: '#E0E0E0',
+    },
+    bmiResult: { marginTop: -5, marginBottom: 20, fontSize: 16, fontWeight: '600', textAlign: 'center', color: '#578FFF', },
+    saveButton: { backgroundColor: '#578FFF', paddingVertical: 18, borderRadius: 12, alignItems: 'center', marginTop: 10, },
     saveButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold', },
 });

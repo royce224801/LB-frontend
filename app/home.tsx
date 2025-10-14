@@ -26,7 +26,7 @@ export default function HomeScreen() {
               params: { userId: Number(userId) }
             })}
           >
-            <FontAwesome name="heartbeat" size={40} color="#007bff" />
+            <FontAwesome name="heartbeat" size={30} color="#578FFF" />
             <Text style={styles.menuItemText}>Manage Health Records</Text>
           </TouchableOpacity>
 
@@ -37,7 +37,7 @@ export default function HomeScreen() {
               params: { userId: Number(userId) }
             })}
           >
-            <MaterialCommunityIcons name="pill" size={40} color="#28a745" />
+            <MaterialCommunityIcons name="pill" size={30} color="#28a745" />
             <Text style={styles.menuItemText}>Medicine Reminders</Text>
           </TouchableOpacity>
 
@@ -48,11 +48,10 @@ export default function HomeScreen() {
               params: { userId: Number(userId) }
             })}
           >
-            <FontAwesome name="user-md" size={40} color="#dc3545" />
+            <FontAwesome name="user-md" size={30} color="#FFD700" />
             <Text style={styles.menuItemText}>Book an Appointment</Text>
           </TouchableOpacity>
-            
-          {/* NEW BUTTON FOR VIEWING APPOINTMENTS */}
+
           <TouchableOpacity
             style={styles.menuItem}
             onPress={() => router.push({
@@ -60,7 +59,7 @@ export default function HomeScreen() {
               params: { userId: Number(userId) }
             })}
           >
-            <FontAwesome name="list-alt" size={40} color="#007bff" />
+            <FontAwesome name="list-alt" size={30} color="#F2F2F7" />
             <Text style={styles.menuItemText}>View Appointments</Text>
           </TouchableOpacity>
         </View>
@@ -76,7 +75,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f0f2f5',
+    backgroundColor: '#1A1A1A',
   },
   container: {
     flex: 1,
@@ -84,44 +83,45 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   header: {
-    marginTop: 20,
-    marginBottom: 30,
+    marginTop: 50,
+    marginBottom: 40,
     alignItems: 'center',
   },
   title: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#E0E0E0',
   },
   subtitle: {
-    fontSize: 18,
-    color: '#666',
+    fontSize: 16,
+    color: '#B0B0B0',
     marginTop: 4,
   },
   menuContainer: {
-    paddingTop: 50,
+    flex: 1,
+    paddingTop: 20,
     gap: 15,
   },
   menuItem: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#2C2C2C',
     padding: 25,
     borderRadius: 15,
     alignItems: 'center',
     flexDirection: 'row',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 5,
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 8,
   },
   menuItemText: {
     marginLeft: 20,
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: '#E0E0E0',
   },
   logoutButton: {
-    backgroundColor: '#ff3b30',
+    backgroundColor: '#FF4D4D',
     padding: 15,
     borderRadius: 12,
     alignItems: 'center',
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logoutButtonText: {
-    color: '#ffffff',
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
