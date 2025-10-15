@@ -50,12 +50,11 @@ export default function DoctorConsultationScreen() {
     
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/doctors/toggle/${doctor.id}?isAvailable=${newStatus}`,
+        `${API_BASE_URL}/api/doctors/toggle/${doctor.id}?isAvailable=${newStatus}&userId=${userId}`,
         { method: 'PUT' }
       );
       
       if (response.ok) {
-        // Update local state immediately
         setDoctors(prev => prev.map(d => 
           d.id === doctor.id ? { ...d, available: newStatus } : d
         ));
