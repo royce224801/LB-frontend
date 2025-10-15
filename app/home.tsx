@@ -1,6 +1,6 @@
-import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -18,7 +18,9 @@ export default function HomeScreen() {
           <Text style={styles.subtitle}>Current User ID: {userId}</Text>
         </View>
 
-        <View style={styles.menuContainer}>
+        {/* --- SCROLL VIEW WRAPS THE MENU ITEMS --- */}
+        <ScrollView contentContainerStyle={styles.menuScrollContent} showsVerticalScrollIndicator={false}>
+          
           <TouchableOpacity
             style={styles.menuItem}
             onPress={() => router.push({
@@ -62,7 +64,29 @@ export default function HomeScreen() {
             <FontAwesome name="list-alt" size={30} color="#F2F2F7" />
             <Text style={styles.menuItemText}>View Appointments</Text>
           </TouchableOpacity>
-        </View>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => router.push({
+              pathname: "/add-health-log",
+              params: { userId: Number(userId) }
+            })}
+          >
+            <Ionicons name="stats-chart" size={30} color="#E0E0E0" />
+            <Text style={styles.menuItemText}>Log Health Vitals</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => router.push({
+              pathname: "/view-health-stats",
+              params: { userId: Number(userId) }
+            })}
+          >
+            <Ionicons name="analytics" size={30} color="#34C759" />
+            <Text style={styles.menuItemText}>View Health Statistics</Text>
+          </TouchableOpacity>
+        </ScrollView>
 
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutButtonText}>Logout</Text>
@@ -97,9 +121,10 @@ const styles = StyleSheet.create({
     color: '#B0B0B0',
     marginTop: 4,
   },
-  menuContainer: {
-    flex: 1,
+  // New style for the ScrollView content container
+  menuScrollContent: {
     paddingTop: 20,
+    paddingBottom: 20, // Add padding to bottom of scroll area
     gap: 15,
   },
   menuItem: {
@@ -126,7 +151,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     marginTop: 'auto',
-    marginBottom: 20,
+    marginBottom: 0, // Adjusted margin since we used flex-end in container
   },
   logoutButtonText: {
     color: '#FFFFFF',

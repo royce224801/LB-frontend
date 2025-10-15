@@ -12,6 +12,8 @@ export default function RootLayout() {
       <Stack.Screen name="doctor-consultation" options={{ headerShown: false }} />
       <Stack.Screen name="book-appointment" options={{ headerShown: false }} />
       <Stack.Screen name="view-appointments" options={{ headerShown: false }} />
+      <Stack.Screen name="add-health-log" options={{ headerShown: false }} />
+      <Stack.Screen name="view-health-stats" options={{ headerShown: false }} /> {/* NEW ROUTE */}
     </Stack>
   );
 }
