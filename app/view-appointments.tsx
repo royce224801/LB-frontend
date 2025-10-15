@@ -104,7 +104,7 @@ export default function ViewAppointmentsScreen() {
     if (loading) {
         return (
             <SafeAreaView style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#578FFF" />
+                <ActivityIndicator size="large" color="#007AFF" />
             </SafeAreaView>
         );
     }
@@ -139,30 +139,30 @@ export default function ViewAppointmentsScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#1A1A1A' },
+    container: { flex: 1, backgroundColor: '#F2F2F7' },
     loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     header: { padding: 20, alignItems: 'center' },
-    title: { fontSize: 28, fontWeight: 'bold', textAlign: 'center', color: '#E0E0E0' },
+    title: { fontSize: 28, fontWeight: 'bold', textAlign: 'center', color: '#1c1c1e' },
     listContainer: { paddingHorizontal: 20 },
     appointmentCard: {
-        backgroundColor: '#2C2C2C',
+        backgroundColor: '#FFFFFF',
         padding: 20,
-        borderRadius: 15,
+        borderRadius: 12,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 15,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 5,
-        elevation: 5,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
     },
     appointmentInfo: { flex: 1 },
-    doctorName: { fontSize: 18, fontWeight: '600', color: '#E0E0E0' },
-    specialty: { fontSize: 14, color: '#B0B0B0', marginTop: 2 },
-    details: { fontSize: 14, color: '#B0B0B0', marginTop: 5 },
-    reason: { fontSize: 14, fontStyle: 'italic', color: '#B0B0B0', marginTop: 5 },
+    doctorName: { fontSize: 18, fontWeight: '600', color: '#1c1c1e' },
+    specialty: { fontSize: 14, color: '#8e8e93', marginTop: 2 },
+    details: { fontSize: 14, color: '#555', marginTop: 5 },
+    reason: { fontSize: 14, fontStyle: 'italic', color: '#888', marginTop: 5 },
     statusContainer: {
         alignItems: 'flex-end',
     },
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     doneButton: {
-        backgroundColor: '#578FFF',
+        backgroundColor: '#34C759',
         paddingVertical: 8,
         paddingHorizontal: 15,
         borderRadius: 8,
@@ -188,9 +188,9 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 50, },
-    emptyText: { fontSize: 18, color: '#B0B0B0', textAlign: 'center', marginBottom: 20, },
+    emptyText: { fontSize: 18, color: '#8e8e93', textAlign: 'center', marginBottom: 20, },
     bookButton: {
-        backgroundColor: '#578FFF',
+        backgroundColor: '#007AFF',
         paddingVertical: 15,
         paddingHorizontal: 30,
         borderRadius: 12,
