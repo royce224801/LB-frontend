@@ -1,17 +1,21 @@
 import { Stack } from 'expo-router';
+import { ThemeProvider } from '../contexts/ThemeContext';
 
 export default function RootLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="login" options={{ headerShown: false }} />
-      <Stack.Screen name="home" options={{ headerShown: false }} />
-      <Stack.Screen name="health-records" options={{ headerShown: false }} />
-      <Stack.Screen name="medicine-reminder" options={{ headerShown: false }} />
-      <Stack.Screen name="add-reminder" options={{ headerShown: false }} />
-      <Stack.Screen name="doctor-consultation" options={{ headerShown: false }} />
-      <Stack.Screen name="book-appointment" options={{ headerShown: false }} />
-      <Stack.Screen name="view-appointments" options={{ headerShown: false }} />
-    </Stack>
+    <ThemeProvider>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="login" options={{ headerShown: false }} />
+        <Stack.Screen name="home" options={{ headerShown: false }} />
+        <Stack.Screen name="health-records" options={{ headerShown: false }} />
+        <Stack.Screen name="medicine-reminder" options={{ headerShown: false }} />
+        <Stack.Screen name="add-reminder" options={{ headerShown: false }} />
+        <Stack.Screen name="doctor-consultation" options={{ headerShown: false }} />
+        <Stack.Screen name="book-appointment" options={{ headerShown: false }} />
+        <Stack.Screen name="view-appointments" options={{ headerShown: false }} />
+        <Stack.Screen name="ai-chatbot" options={{ headerShown: false }} />
+      </Stack>
+    </ThemeProvider>
   );
 }

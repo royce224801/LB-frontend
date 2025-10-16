@@ -4,6 +4,7 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, Animated, PanResponder, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import API_BASE_URL from '../api-config';
+import { useTheme } from '../contexts/ThemeContext';
 
 // Key to store acknowledgment status
 const RISK_ACKNOWLEDGED_KEY = '@LifeBridge:RiskAck';
@@ -18,6 +19,7 @@ type RiskStatus = {
 export default function HomeScreen() {
   const router = useRouter();
   const { userId } = useLocalSearchParams();
+  const { theme, toggleTheme, colors } = useTheme();
   const [riskStatus, setRiskStatus] = useState<RiskStatus | null>(null);
   const [loadingRisk, setLoadingRisk] = useState(true);
   const [showRiskCard, setShowRiskCard] = useState(true);
@@ -137,18 +139,49 @@ export default function HomeScreen() {
 
   const isUserAdmin = userId === HOSPITAL_ADMIN_ID;
 
+  const styles = createStyles(colors);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Dashboard</Text>
-          <Text style={styles.subtitle}>Current User ID: {userId}</Text>
+          <View style={styles.headerTop}>
+            <View>
+              <Text style={styles.title}>Dashboard</Text>
+              <Text style={styles.subtitle}>Current User ID: {userId}</Text>
+            </View>
+            <TouchableOpacity 
+              onPress={toggleTheme} 
+              style={styles.themeToggle}
+            >
+              <Ionicons 
+                name={theme === 'light' ? 'moon' : 'sunny'} 
+                size={24} 
+                color={colors.primary} 
+              />
+            </TouchableOpacity>
+          </View>
         </View>
         
         {showRiskCard && <RiskCard />}
 
         <ScrollView contentContainerStyle={styles.menuScrollContent} showsVerticalScrollIndicator={false}>
           
+          <TouchableOpacity
+            style={[styles.menuItem, styles.featuredItem]}
+            onPress={() => router.push({
+              pathname: "/ai-chatbot",
+              params: { userId: Number(userId) }
+            })}
+          >
+            <Ionicons name="chatbubbles" size={30} color="#578FFF" />
+            <View style={styles.menuItemTextContainer}>
+              <Text style={styles.menuItemText}>AI Health Assistant</Text>
+              <Text style={styles.menuItemSubtext}>Get doctor recommendations</Text>
+            </View>
+            <Ionicons name="sparkles" size={20} color="#FFD700" />
+          </TouchableOpacity>
+
           <TouchableOpacity
             style={styles.menuItem}
             onPress={() => router.push({
@@ -238,10 +271,10 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#1A1A1A',
+    backgroundColor: colors.background,
   },
   container: {
     flex: 1,
@@ -251,20 +284,37 @@ const styles = StyleSheet.create({
   header: {
     marginTop: 50,
     marginBottom: 20,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  themeToggle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.cardBackground,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#E0E0E0',
+    color: colors.text,
   },
   subtitle: {
     fontSize: 16,
-    color: '#B0B0B0',
+    color: colors.textSecondary,
     marginTop: 4,
   },
   riskCard: {
-    backgroundColor: '#2C2C2C',
+    backgroundColor: colors.cardBackground,
     padding: 15,
     borderRadius: 15,
     borderLeftWidth: 5,
@@ -273,7 +323,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     elevation: 8,
-    shadowColor: '#000',
+    shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
@@ -288,7 +338,7 @@ const styles = StyleSheet.create({
   riskCardTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#E0E0E0',
+    color: colors.text,
     marginRight: 8,
   },
   riskCardMessage: {
@@ -303,25 +353,38 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   menuItem: {
-    backgroundColor: '#2C2C2C',
+    backgroundColor: colors.cardBackground,
     padding: 25,
     borderRadius: 15,
     alignItems: 'center',
     flexDirection: 'row',
-    shadowColor: '#000',
+    shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 8,
     elevation: 8,
   },
-  menuItemText: {
+  featuredItem: {
+    borderWidth: 2,
+    borderColor: colors.primary,
+    backgroundColor: colors.cardBackground,
+  },
+  menuItemTextContainer: {
     marginLeft: 20,
+    flex: 1,
+  },
+  menuItemText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#E0E0E0',
+    color: colors.text,
+  },
+  menuItemSubtext: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginTop: 2,
   },
   logoutButton: {
-    backgroundColor: '#FF4D4D',
+    backgroundColor: colors.danger,
     padding: 15,
     borderRadius: 12,
     alignItems: 'center',
