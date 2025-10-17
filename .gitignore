@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies
@@ -44,3 +45,55 @@ app-example
 # generated native folders
 /ios
 /android
+=======
+## Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+pnpm-lock.yaml
+/.pnp
+
+## Expo/React Native
+/android/
+/ios/
+/.expo/
+.expo-shared/
+*.keystore
+*.p12
+*.jks
+
+## Build outputs
+/dist/
+/build/
+*.apk
+*.ipa
+
+## IDEs and OS
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+Thumbs.db
+.DS_Store
+desktop.ini
+
+## Gradle caches
+/node_modules/**/.gradle/
+/node_modules/**/.gradle/**/*
+
+## Log files
+*.log
+
+## Environment files
+.env
+.env.local
+.env.*.local
+
+## Misc
+.turbo/
+.parcel-cache/
+.next/
+/.expo-shared/
+>>>>>>> 1d282aa5 (chore: add .gitignore for Node/Expo/React Native)
